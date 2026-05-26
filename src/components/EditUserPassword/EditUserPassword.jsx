@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Space, Input, Button } from "antd";
+import { ConfigProvider, theme } from "antd";
+import styles from "./EditUserPassword.module.css";
 
 export default function EditUserPassword() {
   const [formData, setFormData] = useState({
@@ -40,26 +43,30 @@ export default function EditUserPassword() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Изменить пароль</h2>
-        <input
-          type="password"
-          name="currentPassword"
-          value={formData.currentPassword}
-          onChange={handleInputChange}
-          placeholder="Current password"
-          required
-        />
-        <input
-          type="password"
-          name="newPassword"
-          value={formData.newPassword}
-          onChange={handleInputChange}
-          placeholder="New password"
-          required
-        />
-        <button type="submit">Сохранить изменения</button>
-      </form>
+      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        <form className={styles.editUserPassword} onSubmit={handleSubmit}>
+          <h2>Изменить пароль</h2>
+          <Input
+            type="password"
+            name="currentPassword"
+            value={formData.currentPassword}
+            onChange={handleInputChange}
+            placeholder="Current password"
+            required
+          />
+          <Input
+            type="password"
+            name="newPassword"
+            value={formData.newPassword}
+            onChange={handleInputChange}
+            placeholder="New password"
+            required
+          />
+          <Button type="primary" htmlType="submit" block>
+            Save
+          </Button>
+        </form>
+      </ConfigProvider>
     </div>
   );
 }

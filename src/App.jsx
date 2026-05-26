@@ -12,6 +12,7 @@ import DoctorsPage from "./pages/DoctorsPage";
 import MyProfilePage from "./pages/MyProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyPetPage from "./pages/MyPetPage";
+import CreateDoctorsPage from "./pages/CreateDoctorsPage";
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
         <Route path="/contacs" element={<ContacsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/auth" element={<AuthPage />} />
-
+        <Route path="/doctors-create" element={<CreateDoctorsPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<MyProfilePage />} />
           <Route path="/mypets" element={<MyPetsPage />} />

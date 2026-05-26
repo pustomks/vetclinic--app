@@ -13,8 +13,9 @@ export default function HeaderApp() {
     <nav className="header-nav">
       <Link to="/">Главная</Link>
       {token && <Link to="/mypets">Мои питомцы</Link>}
-      <Link to="/favorite">Избранное({favorite.length})</Link>
-      <Link to="doctors">Врачи</Link>
+      {token && <Link to="/favorite">Избранное({favorite.length})</Link>}
+      <Link to="/doctors">Врачи</Link>
+      {token && <Link to="/doctors-create">Добавить врача</Link>}
       <Link to="/contacs">Контакты</Link>
       <Link to="/about">О нас</Link>
       {token && <Link to="/profile">Мой профиль</Link>}

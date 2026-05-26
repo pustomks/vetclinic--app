@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../../store/slices/tokenSlice";
+import { Space, Input, Button } from "antd";
+import { ConfigProvider, theme } from "antd";
+import styles from "./FormAuth.module.css";
 
 export default function FormAuth() {
   const [formData, setFormData] = useState({
@@ -41,28 +44,30 @@ export default function FormAuth() {
   return (
     <div>
       <h2>AUTHORIZATION</h2>
-      <h1>{loading.toString()}</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="enter user name"
-          value={formData.username}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="enter password"
-          value={formData.password}
-          onChange={handleImputChange}
-          required
-        />
-        <button disabled={loading} type="submit">
-          login
-        </button>
-      </form>
+
+      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        <form className={styles.inputAuth} onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            name="username"
+            placeholder="enter user name"
+            value={formData.username}
+            onChange={handleImputChange}
+            required
+          />
+          <Input
+            type="password"
+            name="password"
+            placeholder="enter password"
+            value={formData.password}
+            onChange={handleImputChange}
+            required
+          />
+          <Button disabled={loading} type="primary" htmlType="submit" block>
+            Login
+          </Button>
+        </form>
+      </ConfigProvider>
     </div>
   );
 }

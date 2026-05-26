@@ -1,6 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavouritePet } from "../../store/slices/favoriteSlice";
 import { Link } from "react-router-dom";
+import { ConfigProvider, theme } from "antd";
+import {
+  MinusOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  HeartOutlined,
+  HeartFilled,
+} from "@ant-design/icons";
+import { Button } from "antd";
+import styles from "./Pet.module.css";
 
 export default function Pet({ pet, setPets, setEditPet }) {
   const { token } = useSelector((state) => state.token);
@@ -26,16 +37,29 @@ export default function Pet({ pet, setPets, setEditPet }) {
   };
 
   return (
-    <div>
-      <span>{pet.name}</span>
-      <Link to={`/mypets/${pet.id}`}>{pet.name}</Link>
-      <button onClick={() => deletePet(pet.id)}>Удалить</button>
-      <button onClick={() => setEditPet(pet)}>Изменить</button>
-      <button onClick={() => dispatch(toggleFavouritePet(pet))}>
-        {favorite.find((item) => item.id === pet.id)
-          ? "Удалить из избранного"
-          : "В избранное"}
-      </button>
-    </div>
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <div className={styles.petContainer}>
+        <Link className={styles.petLink} to={`/mypets/${pet.id}`}>
+          {pet.name}
+        </Link>
+
+        <div className={styles.petButton}>
+          <Button onClick={() => deletePet(pet.id)}>
+            <DeleteOutlined />
+          </Button>
+          <Button onClick={() => setEditPet(pet)}>
+            <EditOutlined />
+          </Button>
+
+          <Button onClick={() => dispatch(toggleFavouritePet(pet))}>
+            {favorite.find((item) => item.id === pet.id) ? (
+              <MinusOutlined />
+            ) : (
+              <PlusOutlined />
+            )}
+          </Button>
+        </div>
+      </div>
+    </ConfigProvider>
   );
 }

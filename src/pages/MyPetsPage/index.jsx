@@ -1,22 +1,46 @@
 import React, { useEffect, useState } from "react";
 import Pet from "../../components/Pet";
-
+import { DatePicker, Select, Space, Input, Button } from "antd";
+import dayjs from "dayjs";
+import { ConfigProvider, theme } from "antd";
+import styles from "./MyPetsPage.module.css";
 export default function MyPetsPage() {
   const [formData, setFormData] = useState({
-    name: "Nord",
-    species: "DOG",
-    breed: "taks",
-    sex: "MALE",
-    dateOfBirth: "2026-02-11",
-    notes: "bla bla bla",
+    name: "",
+    species: undefined,
+    breed: "",
+    sex: undefined,
+    dateOfBirth: "",
+    notes: "",
   });
   const [pets, setPets] = useState([]);
   const [editPet, setEditPet] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const onChange = (date, dateString) => {
+    setFormData((prev) => ({
+      ...prev,
+      dateOfBirth: dateString,
+    }));
+  };
+
   const handleImputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSexChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      sex: value,
+    }));
+  };
+
+  const handleSpeciesChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      species: value,
+    }));
   };
 
   const token = localStorage.getItem("jwt");
@@ -45,6 +69,15 @@ export default function MyPetsPage() {
           ? previous.map((pet) => (pet.id === editPet.id ? data : pet))
           : [data, ...pets],
       );
+
+      setFormData({
+        name: "",
+        species: undefined,
+        breed: "",
+        sex: undefined,
+        dateOfBirth: "",
+        notes: "",
+      });
 
       setEditPet(null);
     } catch (error) {
@@ -90,9 +123,9 @@ export default function MyPetsPage() {
     } else {
       setFormData({
         name: "",
-        species: "",
+        species: undefined,
         breed: "",
-        sex: "",
+        sex: undefined,
         dateOfBirth: "",
         notes: "",
       });
@@ -100,83 +133,102 @@ export default function MyPetsPage() {
   }, [editPet]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div>
-        <h2>GET A PET</h2>
-        {pets.map((pet) => (
-          <Pet
-            key={pet.id}
-            setPets={setPets}
-            setEditPet={setEditPet}
-            pet={pet}
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <div className={styles.petPetsContainer}>
+        <h2>PET</h2>
+        <div className={styles.petsList}>
+          {pets.map((pet) => (
+            <Pet
+              key={pet.id}
+              setPets={setPets}
+              setEditPet={setEditPet}
+              pet={pet}
+            />
+          ))}
+        </div>
+
+        <div className={styles.pagePet}>
+          <Button disabled={page <= 1} onClick={() => setPage(page - 1)}>
+            Назад
+          </Button>
+          <span>
+            Страница {page} из {totalPages}
+          </span>
+          <Button
+            disabled={page >= totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Вперед
+          </Button>
+        </div>
+
+        <form className={styles.myPetsForm} onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            name="name"
+            placeholder="enter name"
+            value={formData.name}
+            onChange={handleImputChange}
+            required
           />
-        ))}
+          <Select
+            placeholder="enter species"
+            value={formData.species}
+            onChange={handleSpeciesChange}
+            style={{ width: "100%", textAlign: "left" }}
+            options={[
+              { value: "DOG", label: "Dog" },
+              { value: "CAT", label: "Cat" },
+              { value: "BIRD", label: "Bird" },
+              { value: "RODENTS", label: "Rodents" },
+            ]}
+          />
+
+          <Input
+            type="text"
+            name="breed"
+            placeholder="enter breed"
+            value={formData.breed}
+            onChange={handleImputChange}
+            required
+          />
+          <Select
+            placeholder="enter sex"
+            value={formData.sex}
+            onChange={handleSexChange}
+            style={{ width: "100%", textAlign: "left" }}
+            options={[
+              { value: "MALE", label: "Male" },
+              { value: "FEMALE", label: "Female" },
+            ]}
+          />
+
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <DatePicker
+              onChange={onChange}
+              value={
+                formData.dateOfBirth
+                  ? dayjs(formData.dateOfBirth, "YYYY-MM-DD")
+                  : null
+              }
+              format="YYYY-MM-DD"
+              placeholder="enter date of birth"
+              style={{ width: "100%" }}
+            />
+          </Space>
+          <Input
+            type="text"
+            name="notes"
+            placeholder="enter notes"
+            value={formData.notes}
+            onChange={handleImputChange}
+            required
+          />
+          <Button type="primary" htmlType="submit" block>
+            save
+          </Button>
+        </form>
       </div>
-      <div>
-        <button disabled={page <= 1} onClick={() => setPage(page - 1)}>
-          Назад
-        </button>
-        <span>
-          Страница {page} из {totalPages}
-        </span>
-        <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
-          Вперед
-        </button>
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", rowGap: "20px" }}
-      >
-        <input
-          type="text"
-          name="name"
-          placeholder="enter name"
-          value={formData.name}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="species"
-          placeholder="enter species"
-          value={formData.species}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="breed"
-          placeholder="enter breed"
-          value={formData.breed}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="sex"
-          placeholder="enter sex"
-          value={formData.sex}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="dateOfBirth"
-          placeholder="enter date of birth"
-          value={formData.dateOfBirth}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="notes"
-          placeholder="enter notes"
-          value={formData.notes}
-          onChange={handleImputChange}
-          required
-        />
-        <button type="submit">save</button>
-      </form>
-    </div>
+    </ConfigProvider>
   );
 }

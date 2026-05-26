@@ -1,0 +1,22 @@
+.petContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto 12px auto;
+  padding: 5px 8px;
+  background-color: #141414;
+  border: 1px solid #303030;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.petLink {
+  color: #e0e0e0;
+  text-decoration: none;
+}
+
+.petButton {
+  display: flex;
+  gap: 8px;
+}

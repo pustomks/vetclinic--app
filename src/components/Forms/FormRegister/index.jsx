@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Space, Input, Button } from "antd";
+import { ConfigProvider, theme } from "antd";
+import styles from "./FormRegister.module.css";
 
 export default function FormRegister() {
   const [formData, setFormData] = useState({
@@ -39,53 +42,57 @@ export default function FormRegister() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div>
       <h2>REGISTRATION</h2>
-      <form onSubmit={handleSubmit}>
-        {passwordError && <p style={{ color: "red" }}>Пароли не совпадают</p>}
-        <input
-          type="text"
-          name="username"
-          placeholder="enter user name"
-          value={formData.username}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="fullName"
-          placeholder="enter full name"
-          value={formData.fullName}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="text"
-          name="email"
-          placeholder="enter email"
-          value={formData.email}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="enter password"
-          value={formData.password}
-          onChange={handleImputChange}
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="enter confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleImputChange}
-          required
-        />
+      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        <form className={styles.inputRegister} onSubmit={handleSubmit}>
+          {passwordError && <p style={{ color: "red" }}>Пароли не совпадают</p>}
+          <Input
+            type="text"
+            name="username"
+            placeholder="enter user name"
+            value={formData.username}
+            onChange={handleImputChange}
+            required
+          />
+          <Input
+            type="text"
+            name="fullName"
+            placeholder="enter full name"
+            value={formData.fullName}
+            onChange={handleImputChange}
+            required
+          />
+          <Input
+            type="text"
+            name="email"
+            placeholder="enter email"
+            value={formData.email}
+            onChange={handleImputChange}
+            required
+          />
+          <Input
+            type="password"
+            name="password"
+            placeholder="enter password"
+            value={formData.password}
+            onChange={handleImputChange}
+            required
+          />
+          <Input
+            type="password"
+            name="confirmPassword"
+            placeholder="enter confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleImputChange}
+            required
+          />
 
-        <button type="submit">register</button>
-      </form>
+          <Button type="primary" htmlType="submit" block>
+            Register
+          </Button>
+        </form>
+      </ConfigProvider>
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/slices/tokenSlice";
+import { Space, Input, Button } from "antd";
+import { ConfigProvider, theme } from "antd";
+import styles from "./EditUserInfo.module.css";
 
 export default function EditUserInfo() {
   const [formData, setFormData] = useState({
@@ -78,23 +81,27 @@ export default function EditUserInfo() {
     <div>
       <h2>Редактировать профиль</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="fullName"
-          value={formData.fullName}
-          onChange={handleInputChange}
-          placeholder="Full Name"
-          disabled={loading}
-        />
-        <input
-          name="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          placeholder="Email"
-          disabled={loading}
-        />
-        <button type="submit">Сохранить изменения</button>
-      </form>
+      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        <form className={styles.formEditUserInfo} onSubmit={handleSubmit}>
+          <Input
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
+            placeholder="Full Name"
+            disabled={loading}
+          />
+          <Input
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder="Email"
+            disabled={loading}
+          />
+          <Button type="primary" htmlType="submit" block>
+            Save
+          </Button>
+        </form>
+      </ConfigProvider>
     </div>
   );
 }

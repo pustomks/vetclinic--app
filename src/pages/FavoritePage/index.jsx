@@ -1,5 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ConfigProvider, theme } from "antd";
+import { Button } from "antd";
+import { MinusOutlined, DeleteOutlined } from "@ant-design/icons";
+import styles from "./FavoritePage.module.css";
 import {
   deleteAllFavorites,
   toggleFavouritePet,
@@ -14,24 +18,29 @@ export default function FavoritePage() {
   };
 
   return (
-    <div>
-      <h2>Избранные питомцы</h2>
-      {favorite.length > 0 && (
-        <button onClick={handleDeleteAll}>Удалить всё</button>
-      )}
-
-      {favorite.length === 0 ? (
-        <p>Нет избранных питомцев</p>
-      ) : (
-        favorite.map((pet) => (
-          <div key={pet.id}>
-            <span>{pet.name}</span>
-            <button onClick={() => dispatch(toggleFavouritePet(pet))}>
-              Удалить из избранного
-            </button>
-          </div>
-        ))
-      )}
-    </div>
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <div className={styles.mainContainer}>
+        <h2>Избранные питомцы</h2>
+        {favorite.length > 0 && (
+          <Button onClick={handleDeleteAll}>
+            <DeleteOutlined />
+          </Button>
+        )}
+        <div className={styles.favoritesPageContainer}>
+          {favorite.length === 0 ? (
+            <p className={styles.favoriteText}>Нет избранных питомцев</p>
+          ) : (
+            favorite.map((pet) => (
+              <div className={styles.favoriteItem} key={pet.id}>
+                <span className={styles.petName}>{pet.name}</span>
+                <Button onClick={() => dispatch(toggleFavouritePet(pet))}>
+                  <MinusOutlined />
+                </Button>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </ConfigProvider>
   );
 }
