@@ -78,7 +78,7 @@ export default function EditUserInfo() {
 
   if (error) return <h1> ERROR</h1>;
   return (
-    <div>
+    <div className={styles.editContainer}>
       <h2>Редактировать профиль</h2>
 
       <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>

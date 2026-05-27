@@ -1,5 +1,42 @@
 .header-nav {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  box-sizing: border-box;
+
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
   align-items: center;
+  padding: 15px 40px;
+  gap: 10px;
+
+  background-color: rgba(26, 26, 26, 0.95);
+
+  border-bottom: 1px solid #333;
+}
+
+.header-links {
+  display: flex;
+  gap: 24px;
+}
+
+.header-nav a {
+  color: #b3b3b3;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.header-nav a:hover {
+  color: #ffffff;
+}
+
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }

@@ -214,6 +214,9 @@ export default function MyPetsPage() {
               format="YYYY-MM-DD"
               placeholder="enter date of birth"
               style={{ width: "100%" }}
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
             />
           </Space>
           <Input
@@ -225,7 +228,7 @@ export default function MyPetsPage() {
             required
           />
           <Button type="primary" htmlType="submit" block>
-            save
+            {editPet ? "Edit" : "Save"}
           </Button>
         </form>
       </div>

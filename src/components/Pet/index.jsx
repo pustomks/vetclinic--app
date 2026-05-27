@@ -10,14 +10,14 @@ import {
   HeartOutlined,
   HeartFilled,
 } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import styles from "./Pet.module.css";
 
 export default function Pet({ pet, setPets, setEditPet }) {
   const { token } = useSelector((state) => state.token);
   const favorite = useSelector((state) => state.favorite);
-
   const dispatch = useDispatch();
+  const isFavorite = favorite.find((item) => item.id === pet.id);
   const deletePet = async (id) => {
     try {
       const response = await fetch(`/api/pets/me/${id}`, {
@@ -44,20 +44,25 @@ export default function Pet({ pet, setPets, setEditPet }) {
         </Link>
 
         <div className={styles.petButton}>
-          <Button onClick={() => deletePet(pet.id)}>
-            <DeleteOutlined />
-          </Button>
-          <Button onClick={() => setEditPet(pet)}>
-            <EditOutlined />
-          </Button>
-
-          <Button onClick={() => dispatch(toggleFavouritePet(pet))}>
-            {favorite.find((item) => item.id === pet.id) ? (
-              <MinusOutlined />
-            ) : (
-              <PlusOutlined />
-            )}
-          </Button>
+          <Tooltip title="Delete pet">
+            <Button onClick={() => deletePet(pet.id)}>
+              <DeleteOutlined />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Edit pet">
+            <Button onClick={() => setEditPet(pet)}>
+              <EditOutlined />
+            </Button>
+          </Tooltip>
+          <Tooltip
+            title={
+              isFavorite ? "Remove pet from favorites" : "Add pet to favorites"
+            }
+          >
+            <Button onClick={() => dispatch(toggleFavouritePet(pet))}>
+              {isFavorite ? <MinusOutlined /> : <PlusOutlined />}
+            </Button>
+          </Tooltip>
         </div>
       </div>
     </ConfigProvider>

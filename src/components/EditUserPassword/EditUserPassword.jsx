@@ -42,10 +42,10 @@ export default function EditUserPassword() {
   if (error) return <h1> ERROR </h1>;
 
   return (
-    <div>
+    <div className={styles.editContainer}>
       <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        <h2>Изменить пароль</h2>
         <form className={styles.editUserPassword} onSubmit={handleSubmit}>
-          <h2>Изменить пароль</h2>
           <Input
             type="password"
             name="currentPassword"

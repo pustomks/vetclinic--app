@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ConfigProvider, theme } from "antd";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { MinusOutlined, DeleteOutlined } from "@ant-design/icons";
 import styles from "./FavoritePage.module.css";
 import {
@@ -22,9 +22,11 @@ export default function FavoritePage() {
       <div className={styles.mainContainer}>
         <h2>Избранные питомцы</h2>
         {favorite.length > 0 && (
-          <Button onClick={handleDeleteAll}>
-            <DeleteOutlined />
-          </Button>
+          <Tooltip title="Remove all pets from favorites">
+            <Button onClick={handleDeleteAll}>
+              <DeleteOutlined />
+            </Button>
+          </Tooltip>
         )}
         <div className={styles.favoritesPageContainer}>
           {favorite.length === 0 ? (
@@ -33,9 +35,11 @@ export default function FavoritePage() {
             favorite.map((pet) => (
               <div className={styles.favoriteItem} key={pet.id}>
                 <span className={styles.petName}>{pet.name}</span>
-                <Button onClick={() => dispatch(toggleFavouritePet(pet))}>
-                  <MinusOutlined />
-                </Button>
+                <Tooltip title="Remove pet from favorites">
+                  <Button onClick={() => dispatch(toggleFavouritePet(pet))}>
+                    <MinusOutlined />
+                  </Button>
+                </Tooltip>
               </div>
             ))
           )}

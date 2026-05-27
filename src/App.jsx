@@ -13,11 +13,44 @@ import MyProfilePage from "./pages/MyProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyPetPage from "./pages/MyPetPage";
 import CreateDoctorsPage from "./pages/CreateDoctorsPage";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserRole } from "./store/slices/roleSlice";
 
 function App() {
+  const { token } = useSelector((state) => state.token);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    const checkRole = async () => {
+      try {
+        const response = await fetch("/api/users/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("error");
+        }
+        const { role } = await response.json();
+        dispatch(setUserRole(role));
+        console.log(role);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    checkRole();
+  }, [token]);
+
   return (
     <>
       <HeaderApp />
+
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/favorite" element={<FavoritePage />} />
@@ -31,7 +64,6 @@ function App() {
           <Route path="/mypets" element={<MyPetsPage />} />
           <Route path="/mypets/:id" element={<MyPetPage />} />
         </Route>
-
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

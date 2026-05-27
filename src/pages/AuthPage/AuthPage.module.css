@@ -1,5 +1,5 @@
 .FormAuth {
-  min-height: 330px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -9,6 +9,7 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
+  max-width: 500px;
   width: 100%;
   margin: 15px auto 0 auto;
 }

@@ -1,5 +1,8 @@
 .inputRegister {
   display: flex;
+  gap: 10px;
   flex-direction: column;
-  row-gap: 10px;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 500px;
 }

@@ -25,3 +25,8 @@
   margin: 0 auto;
   align-items: stretch;
 }
+
+.pagePet {
+  display: flex;
+  gap: 15px;
+}

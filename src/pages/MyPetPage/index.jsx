@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Pet from "../../components/Pet";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import PetCard from "../../components/PetCard";
+import styles from "./MyPetPage.module.css";
 
 export default function MyPetPage() {
   const [pet, setPet] = useState({});
@@ -40,5 +42,9 @@ export default function MyPetPage() {
     return <h1>server error</h1>;
   }
 
-  return <div>{pet.name}</div>;
+  return (
+    <div className={styles.mainCard}>
+      <PetCard pet={pet} />
+    </div>
+  );
 }
