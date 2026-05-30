@@ -58,8 +58,8 @@ function App() {
         <Route path="/contacs" element={<ContacsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/doctors-create" element={<CreateDoctorsPage />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/doctors-create" element={<CreateDoctorsPage />} />
           <Route path="/profile" element={<MyProfilePage />} />
           <Route path="/mypets" element={<MyPetsPage />} />
           <Route path="/mypets/:id" element={<MyPetPage />} />

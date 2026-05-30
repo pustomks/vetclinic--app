@@ -4,6 +4,7 @@ import { DatePicker, Select, Space, Input, Button } from "antd";
 import dayjs from "dayjs";
 import { ConfigProvider, theme } from "antd";
 import styles from "./MyPetsPage.module.css";
+import { useSelector } from "react-redux";
 export default function MyPetsPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -17,6 +18,7 @@ export default function MyPetsPage() {
   const [editPet, setEditPet] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { token } = useSelector((state) => state.token);
 
   const onChange = (date, dateString) => {
     setFormData((prev) => ({
@@ -42,8 +44,6 @@ export default function MyPetsPage() {
       species: value,
     }));
   };
-
-  const token = localStorage.getItem("jwt");
 
   const handleSubmit = async (e) => {
     e.preventDefault();

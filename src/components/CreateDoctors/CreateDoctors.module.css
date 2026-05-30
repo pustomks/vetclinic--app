@@ -1,0 +1,8 @@
+.mainForm {
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 650px;
+}

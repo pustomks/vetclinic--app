@@ -5,6 +5,7 @@ import { login } from "../../../store/slices/tokenSlice";
 import { Space, Input, Button } from "antd";
 import { ConfigProvider, theme } from "antd";
 import styles from "./FormAuth.module.css";
+import api from "../../../api/axios";
 
 export default function FormAuth() {
   const [formData, setFormData] = useState({
@@ -23,14 +24,8 @@ export default function FormAuth() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      console.log(response);
-      const { accessToken } = await response.json();
-      localStorage.setItem("jwt", accessToken);
+      const { data } = await api.post("/api/auth/login", formData);
+      const { accessToken } = data;
       dispatch(login(accessToken));
       console.log(accessToken);
       navigate("/");

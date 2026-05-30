@@ -10,6 +10,7 @@ const tokenSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.token = action.payload;
+      localStorage.setItem("jwt", action.payload);
     },
     logout: (state) => {
       state.token = null;

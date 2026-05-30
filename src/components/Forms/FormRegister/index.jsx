@@ -25,15 +25,15 @@ export default function FormRegister() {
       setPasswordError(true);
       return;
     }
+    const { confirmPassword, ...payload } = formData;
     setPasswordError(false);
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       console.log(response);
-
       const data = await response.json();
       console.log(data);
     } catch (error) {

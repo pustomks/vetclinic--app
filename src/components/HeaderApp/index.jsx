@@ -5,6 +5,7 @@ import { logout } from "../../store/slices/tokenSlice";
 import { Button } from "antd";
 import { ConfigProvider, theme } from "antd";
 import "./HeaderApp.css";
+import { deleteUserRole } from "../../store/slices/roleSlice";
 
 export default function HeaderApp() {
   const { token } = useSelector((state) => state.token);
@@ -31,7 +32,13 @@ export default function HeaderApp() {
           {token && <Link to="/profile">Мой профиль</Link>}
 
           {token ? (
-            <Button type="primary" onClick={() => dispatch(logout())}>
+            <Button
+              type="primary"
+              onClick={() => {
+                dispatch(logout());
+                dispatch(deleteUserRole());
+              }}
+            >
               logout
             </Button>
           ) : (

@@ -14,7 +14,6 @@ export default function DoctorsCard({
   veterinaryLicense,
   hiredOn,
   id,
-  plusClick,
 }) {
   const [doctorHours, setDoctorHours] = useState({});
   const [loading, setLoading] = useState(false);
@@ -52,7 +51,7 @@ export default function DoctorsCard({
   );
 
   return (
-    <div onMouseEnter={() => plusClick()} className={styles.card}>
+    <div className={styles.card}>
       <h3>{`${firstName} ${lastName}`}</h3>
       <div>
         <p>Специализация:{specialization}</p>
