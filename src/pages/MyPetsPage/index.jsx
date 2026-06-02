@@ -27,7 +27,7 @@ export default function MyPetsPage() {
     }));
   };
 
-  const handleImputChange = (e) => {
+  const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -168,7 +168,7 @@ export default function MyPetsPage() {
             name="name"
             placeholder="enter name"
             value={formData.name}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Select
@@ -189,7 +189,7 @@ export default function MyPetsPage() {
             name="breed"
             placeholder="enter breed"
             value={formData.breed}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Select
@@ -224,7 +224,7 @@ export default function MyPetsPage() {
             name="notes"
             placeholder="enter notes"
             value={formData.notes}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Button type="primary" htmlType="submit" block>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./CreateDoctors.module.css";
-import { Input, Button } from "antd";
+import { Input, Button, Space, DatePicker } from "antd";
 import { ConfigProvider, theme } from "antd";
+import dayjs from "dayjs";
 
 export default function CreateDoctors() {
   const { token } = useSelector((state) => state.token);
@@ -21,7 +22,21 @@ export default function CreateDoctors() {
     active: true,
   });
 
-  const handleImputChange = (e) => {
+  const onChangeDateOfBirth = (date, dateString) => {
+    setFormData((prev) => ({
+      ...prev,
+      dateOfBirth: dateString,
+    }));
+  };
+
+  const onChangeHiredOn = (date, dateString) => {
+    setFormData((prev) => ({
+      ...prev,
+      hiredOn: dateString,
+    }));
+  };
+
+  const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -74,7 +89,7 @@ export default function CreateDoctors() {
             name="firstName"
             placeholder="Enter first name"
             value={formData.firstName}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -82,7 +97,7 @@ export default function CreateDoctors() {
             name="lastName"
             placeholder="Enter last name"
             value={formData.lastName}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -90,7 +105,7 @@ export default function CreateDoctors() {
             name="specialization"
             placeholder="Enter specialization"
             value={formData.specialization}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -98,7 +113,7 @@ export default function CreateDoctors() {
             name="phone"
             placeholder="Enter phone"
             value={formData.phone}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -106,7 +121,7 @@ export default function CreateDoctors() {
             name="email"
             placeholder="Enter e-mail"
             value={formData.email}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -114,7 +129,7 @@ export default function CreateDoctors() {
             name="veterinaryLicense"
             placeholder="Enter veterinaryLicense"
             value={formData.veterinaryLicense}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -122,7 +137,7 @@ export default function CreateDoctors() {
             name="bio"
             placeholder="Enter bio"
             value={formData.bio}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -130,25 +145,39 @@ export default function CreateDoctors() {
             name="photoUrl"
             placeholder="Enter photo url"
             value={formData.photoUrl}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
-          <Input
-            type="text"
-            name="dateOfBirth"
-            placeholder="Enter date of birth"
-            value={formData.dateOfBirth}
-            onChange={handleImputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="hiredOn"
-            placeholder="enter hiredOn"
-            value={formData.hiredOn}
-            onChange={handleImputChange}
-            required
-          />
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <DatePicker
+              onChange={onChangeDateOfBirth}
+              value={
+                formData.dateOfBirth
+                  ? dayjs(formData.dateOfBirth, "YYYY-MM-DD")
+                  : null
+              }
+              format="YYYY-MM-DD"
+              placeholder="enter date of birth"
+              style={{ width: "100%" }}
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
+            />
+          </Space>
+          <Space direction="vertical" style={{ width: "100%" }}>
+            <DatePicker
+              onChange={onChangeHiredOn}
+              value={
+                formData.hiredOn ? dayjs(formData.hiredOn, "YYYY-MM-DD") : null
+              }
+              format="YYYY-MM-DD"
+              placeholder="enter hired on"
+              style={{ width: "100%" }}
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
+            />
+          </Space>
           <Button type="primary" htmlType="submit" block>
             Create
           </Button>

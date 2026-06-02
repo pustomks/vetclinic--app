@@ -46,7 +46,7 @@ export default function EditUserPassword() {
       <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
         <h2>Изменить пароль</h2>
         <form className={styles.editUserPassword} onSubmit={handleSubmit}>
-          <Input
+          <Input.Password
             type="password"
             name="currentPassword"
             value={formData.currentPassword}
@@ -54,7 +54,7 @@ export default function EditUserPassword() {
             placeholder="Current password"
             required
           />
-          <Input
+          <Input.Password
             type="password"
             name="newPassword"
             value={formData.newPassword}

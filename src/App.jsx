@@ -16,6 +16,7 @@ import CreateDoctorsPage from "./pages/CreateDoctorsPage";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserRole } from "./store/slices/roleSlice";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
   const { token } = useSelector((state) => state.token);
@@ -59,10 +60,12 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/doctors-create" element={<CreateDoctorsPage />} />
           <Route path="/profile" element={<MyProfilePage />} />
           <Route path="/mypets" element={<MyPetsPage />} />
           <Route path="/mypets/:id" element={<MyPetPage />} />
+        </Route>
+        <Route element={<AdminRoute />}>
+          <Route path="/doctors-create" element={<CreateDoctorsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

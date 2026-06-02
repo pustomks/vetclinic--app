@@ -13,24 +13,31 @@ export default function FormAuth() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleImputChange = (e) => {
+  const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     console.log(e.target.name);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     try {
       const { data } = await api.post("/api/auth/login", formData);
       const { accessToken } = data;
       dispatch(login(accessToken));
       console.log(accessToken);
       navigate("/");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
+      if (err.status === 401) {
+        setError("Incorrect login or password");
+      } else {
+        setError("Server error");
+      }
     } finally {
       setLoading(false);
     }
@@ -47,20 +54,23 @@ export default function FormAuth() {
             name="username"
             placeholder="enter user name"
             value={formData.username}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
-          <Input
+          <Input.Password
             type="password"
             name="password"
             placeholder="enter password"
             value={formData.password}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Button disabled={loading} type="primary" htmlType="submit" block>
             Login
           </Button>
+          {error ? (
+            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+          ) : null}
         </form>
       </ConfigProvider>
     </div>

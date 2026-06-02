@@ -14,7 +14,7 @@ export default function FormRegister() {
 
   const [passwordError, setPasswordError] = useState(false);
 
-  const handleImputChange = (e) => {
+  const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     console.log(e.target.name);
   };
@@ -36,6 +36,16 @@ export default function FormRegister() {
       console.log(response);
       const data = await response.json();
       console.log(data);
+      if (!response.ok) {
+        throw new Error("Error");
+      }
+      setFormData({
+        username: "",
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +62,7 @@ export default function FormRegister() {
             name="username"
             placeholder="enter user name"
             value={formData.username}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
@@ -60,31 +70,31 @@ export default function FormRegister() {
             name="fullName"
             placeholder="enter full name"
             value={formData.fullName}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
           <Input
-            type="text"
+            type="email"
             name="email"
             placeholder="enter email"
             value={formData.email}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
-          <Input
+          <Input.Password
             type="password"
             name="password"
             placeholder="enter password"
             value={formData.password}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
-          <Input
+          <Input.Password
             type="password"
             name="confirmPassword"
             placeholder="enter confirmPassword"
             value={formData.confirmPassword}
-            onChange={handleImputChange}
+            onChange={handleInputChange}
             required
           />
 
