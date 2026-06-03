@@ -10,3 +10,8 @@ export const WEEK_DAYS_DICTIONARY = {
   SAT: "Суббота",
   SUN: "Воскресенье",
 };
+
+export const USER_ROLES = {
+  ADMIN: "ADMIN",
+  USER: "USER",
+};

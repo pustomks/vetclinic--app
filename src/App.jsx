@@ -15,7 +15,7 @@ import MyPetPage from "./pages/MyPetPage";
 import CreateDoctorsPage from "./pages/CreateDoctorsPage";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserRole } from "./store/slices/roleSlice";
+import { setUserRole, startRoleLoading } from "./store/slices/roleSlice";
 import AdminRoute from "./components/AdminRoute";
 
 function App() {
@@ -27,6 +27,7 @@ function App() {
       return;
     }
     const checkRole = async () => {
+      dispatch(startRoleLoading());
       try {
         const response = await fetch("/api/users/me", {
           method: "GET",
@@ -40,6 +41,7 @@ function App() {
         }
         const { role } = await response.json();
         dispatch(setUserRole(role));
+
         console.log(role);
       } catch (error) {
         console.log(error);

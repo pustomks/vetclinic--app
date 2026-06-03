@@ -33,11 +33,9 @@ export default function FormAuth() {
       navigate("/");
     } catch (err) {
       console.log(err);
-      if (err.status === 401) {
-        setError("Incorrect login or password");
-      } else {
-        setError("Server error");
-      }
+      setError(
+        err.status === 401 ? "Incorrect login or password" : "Server error",
+      );
     } finally {
       setLoading(false);
     }

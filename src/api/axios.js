@@ -24,7 +24,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       store.dispatch(logout());
       store.dispatch(deleteUserRole());
-      window.location.href = "/auth";
+      // window.location.href = "/auth";
     }
     return Promise.reject(error);
   },
