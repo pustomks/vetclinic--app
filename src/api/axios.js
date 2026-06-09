@@ -4,7 +4,7 @@ import { logout } from "../store/slices/tokenSlice";
 import { deleteUserRole } from "../store/slices/roleSlice";
 
 const api = axios.create({
-  baseUrl: "http://localhost:8080",
+  baseURL: "",
   headers: {
     "Content-Type": "application/json",
   },

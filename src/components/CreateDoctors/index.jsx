@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./CreateDoctors.module.css";
-import { Input, Button, Space, DatePicker } from "antd";
+import { Input, Button, Space, DatePicker, InputNumber, Select } from "antd";
 import { ConfigProvider, theme } from "antd";
 import dayjs from "dayjs";
+import api from "../../api/axios";
 
-export default function CreateDoctors() {
+export default function CreateDoctors({ fetchAllDoctors, setDoctor }) {
   const { token } = useSelector((state) => state.token);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -17,10 +19,18 @@ export default function CreateDoctors() {
     bio: "",
     photoUrl: "",
     dateOfBirth: "",
-    yearsOfExperience: 100,
+    yearsOfExperience: null,
     hiredOn: "",
-    active: true,
+    active: null,
   });
+
+  const editDoctor = async (id) => {
+    try {
+      const response = await api.put(`/api/doctors/${id}`);
+    } catch (error) {
+      console.log("Error");
+    }
+  };
 
   const onChangeDateOfBirth = (date, dateString) => {
     setFormData((prev) => ({
@@ -33,6 +43,20 @@ export default function CreateDoctors() {
     setFormData((prev) => ({
       ...prev,
       hiredOn: dateString,
+    }));
+  };
+
+  const handleNumberChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      yearsOfExperience: value,
+    }));
+  };
+
+  const handleActiveChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      active: value,
     }));
   };
 
@@ -56,6 +80,8 @@ export default function CreateDoctors() {
       }
       const data = await response.json();
       console.log(data);
+      setDoctor((prev) => [data, ...prev]);
+      fetchAllDoctors();
 
       setFormData({
         firstName: "",
@@ -67,9 +93,9 @@ export default function CreateDoctors() {
         bio: "",
         photoUrl: "",
         dateOfBirth: "",
-        yearsOfExperience: 100,
+        yearsOfExperience: null,
         hiredOn: "",
-        active: true,
+        active: null,
       });
     } catch (error) {
       console.log(error);
@@ -148,7 +174,16 @@ export default function CreateDoctors() {
             onChange={handleInputChange}
             required
           />
-          <Space direction="vertical" style={{ width: "100%" }}>
+          <InputNumber
+            min={0}
+            max={100}
+            placeholder="Enter years of experience"
+            value={formData.yearsOfExperience}
+            onChange={handleNumberChange}
+            style={{ width: "100%" }}
+            required
+          />
+          <Space orientation="vertical" style={{ width: "100%" }}>
             <DatePicker
               onChange={onChangeDateOfBirth}
               value={
@@ -164,7 +199,7 @@ export default function CreateDoctors() {
               }
             />
           </Space>
-          <Space direction="vertical" style={{ width: "100%" }}>
+          <Space orientation="vertical" style={{ width: "100%" }}>
             <DatePicker
               onChange={onChangeHiredOn}
               value={
@@ -178,6 +213,16 @@ export default function CreateDoctors() {
               }
             />
           </Space>
+          <Select
+            placeholder="Enter active"
+            value={formData.active}
+            onChange={handleActiveChange}
+            style={{ width: "100%", textAlign: "left" }}
+            options={[
+              { value: true, label: "Actived" },
+              { value: false, label: "Not actived" },
+            ]}
+          />
           <Button type="primary" htmlType="submit" block>
             Create
           </Button>

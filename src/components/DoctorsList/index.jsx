@@ -24,7 +24,7 @@ export default function DoctorsList() {
   return (
     <div className="d-flex" style={{ gap: "20px" }}>
       {doctor.map((doctor) => (
-        <DoctorsCard plusClick={plusClick} key={Math.random()} {...doctor} />
+        <DoctorsCard key={doctor.id} {...doctor} />
       ))}
     </div>
   );

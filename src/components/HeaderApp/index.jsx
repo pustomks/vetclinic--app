@@ -20,7 +20,7 @@ export default function HeaderApp() {
           <Link to="/">Главная</Link>
           <Link to="/doctors">Врачи</Link>
           {token && role === "ADMIN" && (
-            <Link to="/doctors-create">Добавить врача</Link>
+            <Link to="/doctors-office">Кабинет врачей</Link>
           )}
           <Link to="/contacs">Контакты</Link>
           <Link to="/about">О нас</Link>

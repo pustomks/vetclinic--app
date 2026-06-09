@@ -12,11 +12,12 @@ import DoctorsPage from "./pages/DoctorsPage";
 import MyProfilePage from "./pages/MyProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyPetPage from "./pages/MyPetPage";
-import CreateDoctorsPage from "./pages/CreateDoctorsPage";
+import CreateDoctorsPage from "./pages/DoctorsOfficePage";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserRole, startRoleLoading } from "./store/slices/roleSlice";
 import AdminRoute from "./components/AdminRoute";
+import DoctorsOfficePage from "./pages/DoctorsOfficePage";
 
 function App() {
   const { token } = useSelector((state) => state.token);
@@ -67,7 +68,7 @@ function App() {
           <Route path="/mypets/:id" element={<MyPetPage />} />
         </Route>
         <Route element={<AdminRoute />}>
-          <Route path="/doctors-create" element={<CreateDoctorsPage />} />
+          <Route path="/doctors-office" element={<DoctorsOfficePage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -19,8 +19,6 @@ export default function DoctorsCard({
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log("render");
-
   const showModal = () => {
     setIsModalOpen(true);
   };
