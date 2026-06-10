@@ -22,7 +22,7 @@ export default function DoctorsList() {
   }, []);
 
   return (
-    <div className="d-flex" style={{ gap: "20px" }}>
+    <div>
       {doctor.map((doctor) => (
         <DoctorsCard key={doctor.id} {...doctor} />
       ))}

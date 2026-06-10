@@ -14,6 +14,7 @@ import {
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 export default function DoctorsCardAdmin({
+  id,
   firstName,
   lastName,
   specialization,
@@ -21,9 +22,10 @@ export default function DoctorsCardAdmin({
   phone,
   veterinaryLicense,
   hiredOn,
-  id,
-  deleteDoctor,
   dateOfBirth,
+  deleteDoctor,
+  startEditDoctor,
+  ...doctor
 }) {
   const [doctorHours, setDoctorHours] = useState({});
   const [loading, setLoading] = useState(false);
@@ -54,14 +56,25 @@ export default function DoctorsCardAdmin({
     }
   };
 
-  const doctorsSchedule = Object.entries(doctorHours).filter(
-    ([day, intervals]) => intervals.length !== 0,
-  );
+  const handleEdit = () => {
+    startEditDoctor({
+      id,
+      firstName,
+      lastName,
+      specialization,
+      email,
+      phone,
+      veterinaryLicense,
+      hiredOn,
+      dateOfBirth,
+      ...doctor,
+    });
+  };
 
   return (
     <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
       <Space
-        direction="vertical"
+        orientation="vertical"
         size={16}
         style={{ width: "100%", alignItems: "center" }}
       >
@@ -71,7 +84,7 @@ export default function DoctorsCardAdmin({
             <Button type="primary" danger onClick={() => deleteDoctor(id)}>
               <DeleteOutlined />
             </Button>,
-            <Button type="primary" danger>
+            <Button type="default" danger onClick={handleEdit}>
               <EditOutlined />
             </Button>,
           ]}

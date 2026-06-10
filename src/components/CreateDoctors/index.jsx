@@ -1,35 +1,64 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./CreateDoctors.module.css";
-import { Input, Button, Space, DatePicker, InputNumber, Select } from "antd";
+import {
+  Input,
+  Button,
+  Space,
+  DatePicker,
+  InputNumber,
+  Select,
+  Collapse,
+} from "antd";
 import { ConfigProvider, theme } from "antd";
 import dayjs from "dayjs";
 import api from "../../api/axios";
+import DoctorsListAdmin from "../DoctorsListAdmin";
 
-export default function CreateDoctors({ fetchAllDoctors, setDoctor }) {
+export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
   const { token } = useSelector((state) => state.token);
-
+  const [editingDoctor, setEditingDoctor] = useState(null);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    specialization: "",
-    phone: "",
-    email: "",
-    veterinaryLicense: "",
-    bio: "",
-    photoUrl: "",
+    firstName: "Maks",
+    lastName: "Maks",
+    specialization: "Terapevt",
+    phone: "89994372910",
+    email: `maksmaks${Math.round(Math.random() * 10000)}@gmail.com`,
+    veterinaryLicense: `${Math.round(Math.random() * 10000)}`,
+    bio: "sdfsfsfsfsf",
+    photoUrl:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Hj1QkGuVT9KyTU7szwIP9kCemDFVKpwHfA&s",
     dateOfBirth: "",
-    yearsOfExperience: null,
+    yearsOfExperience: 11,
     hiredOn: "",
-    active: null,
+    active: true,
   });
 
   const editDoctor = async (id) => {
     try {
       const response = await api.put(`/api/doctors/${id}`);
+      const data = response.data;
     } catch (error) {
       console.log("Error");
     }
+  };
+
+  const startEditDoctor = (doctor) => {
+    setEditingDoctor(doctor.id);
+    setFormData({
+      firstName: doctor.firstName,
+      lastName: doctor.lastName,
+      specialization: doctor.specialization,
+      phone: doctor.phone,
+      email: doctor.email,
+      veterinaryLicense: doctor.veterinaryLicense,
+      bio: doctor.bio,
+      photoUrl: doctor.photoUrl,
+      dateOfBirth: doctor.dateOfBirth,
+      yearsOfExperience: doctor.yearsOfExperience,
+      hiredOn: doctor.hiredOn,
+      active: doctor.active,
+    });
   };
 
   const onChangeDateOfBirth = (date, dateString) => {
@@ -67,21 +96,22 @@ export default function CreateDoctors({ fetchAllDoctors, setDoctor }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/doctors", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        throw new Error("Error");
+      const url = editingDoctor
+        ? `/api/doctors/${editingDoctor}`
+        : "/api/doctors";
+      const method = editingDoctor ? "put" : "post";
+
+      const response = await api[method](url, formData);
+      const data = response.data;
+
+      if (editingDoctor) {
+        setDoctors((prev) =>
+          prev.map((doc) => (doc.id === editingDoctor ? data : doc)),
+        );
+        setEditingDoctor(null);
+      } else {
+        setDoctors((prev) => [data, ...prev]);
       }
-      const data = await response.json();
-      console.log(data);
-      setDoctor((prev) => [data, ...prev]);
-      fetchAllDoctors();
 
       setFormData({
         firstName: "",
@@ -95,16 +125,25 @@ export default function CreateDoctors({ fetchAllDoctors, setDoctor }) {
         dateOfBirth: "",
         yearsOfExperience: null,
         hiredOn: "",
-        active: null,
+        active: true,
       });
     } catch (error) {
-      console.log(error);
+      console.log("Error");
     }
   };
   return (
     <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
       <div>
-        <h2>CREATE DOCTOR</h2>
+        <div>
+          <DoctorsListAdmin
+            doctors={doctors}
+            setDoctors={setDoctors}
+            startEditDoctor={startEditDoctor}
+            deleteDoctor={deleteDoctor}
+          />
+        </div>
+
+        <h2>{editingDoctor ? "EDIT DOCTOR" : "CREATE DOCTOR"}</h2>
         <form
           className={styles.mainForm}
           style={{ display: "flex", flexDirection: "column" }}
@@ -223,8 +262,9 @@ export default function CreateDoctors({ fetchAllDoctors, setDoctor }) {
               { value: false, label: "Not actived" },
             ]}
           />
+
           <Button type="primary" htmlType="submit" block>
-            Create
+            {editingDoctor ? "Edit" : "Create"}
           </Button>
         </form>
       </div>

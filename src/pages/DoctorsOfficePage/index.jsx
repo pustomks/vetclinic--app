@@ -1,58 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CreateDoctors from "../../components/CreateDoctors";
-import DoctorsList from "../../components/DoctorsList";
-import DoctorsListAdmin from "../../components/DoctorsListAdmin";
 import api from "../../api/axios";
+import { message } from "antd";
 
 export default function DoctorsOfficePage() {
-  const [doctor, setDoctor] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const { token } = useSelector((state) => state.token);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [editDoctors, setEditDoctors] = useState(null);
-
-  const fetchAllDoctors = async () => {
-    try {
-      const response = await fetch(`/api/doctors?page=${page}&size=1`);
-      const data = await response.json();
-      console.log(data);
-      setDoctor(data.results);
-      setTotalPages(data.info.pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
+    const fetchAllDoctors = async () => {
+      try {
+        const response = await api.get("/api/doctors");
+        const data = response.data;
+        console.log(data);
+        setDoctors([...data.results].reverse());
+      } catch (error) {
+        console.log("error");
+      }
+    };
     fetchAllDoctors();
-  }, [page]);
+  }, []);
 
   const deleteDoctor = async (id) => {
     try {
       const response = await api.delete(`/api/doctors/${id}`);
-      setDoctor((prev) => prev.filter((doc) => doc.id !== id));
-
-      fetchAllDoctors();
+      const data = response.data;
+      setDoctors((prev) => prev.filter((doctor) => doctor.id !== id));
     } catch (error) {
-      console.log("error");
+      console.log("Error");
     }
   };
+
   return (
     <div>
       <div>
-        <DoctorsListAdmin
-          doctor={doctor}
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-          deleteDoctor={deleteDoctor}
-        />
-      </div>
-      <div>
         <CreateDoctors
-          fetchAllDoctors={fetchAllDoctors}
-          setDoctor={setDoctor}
+          doctors={doctors}
+          setDoctors={setDoctors}
+          deleteDoctor={deleteDoctor}
         />
       </div>
     </div>
