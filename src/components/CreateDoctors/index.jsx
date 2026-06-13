@@ -18,6 +18,7 @@ import DoctorsListAdmin from "../DoctorsListAdmin";
 export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
   const { token } = useSelector((state) => state.token);
   const [editingDoctor, setEditingDoctor] = useState(null);
+  const [editWorkingHours, setEditWorkingHours] = useState([]);
   const [formData, setFormData] = useState({
     firstName: "Maks",
     lastName: "Maks",
@@ -37,6 +38,14 @@ export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
   const editDoctor = async (id) => {
     try {
       const response = await api.put(`/api/doctors/${id}`);
+      const data = response.data;
+    } catch (error) {
+      console.log("Error");
+    }
+  };
+  const addWorkingHours = async (id) => {
+    try {
+      const response = await api.put(`/api/doctors/${id}/working-hours`);
       const data = response.data;
     } catch (error) {
       console.log("Error");
