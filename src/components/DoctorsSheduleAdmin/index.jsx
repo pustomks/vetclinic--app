@@ -1,28 +1,24 @@
 import React from "react";
-import { WEEK_DAYS_DICTIONARY } from "../../const";
+import { WEEK_DAYS_NUMBERS } from "../../const";
+import Interview from "../DoctorsScheduleForms";
 
-export default function DoctorsSheduleAdmin({ day, interval }) {
-  const dayWeek = WEEK_DAYS_DICTIONARY[day];
+export default function DoctorsSheduleAdmin({
+  day,
+  interval,
+  handleScheduleChange,
+}) {
+  const dayNumber = WEEK_DAYS_NUMBERS[day];
   return (
     <div>
-      <button>{day}</button>
-      {interval.map((int, key) => (
-        <span key={key}>
-          {int.from} - {int.to}
-        </span>
-      ))}
+      <span>
+        День {dayNumber} ({day})
+      </span>
 
-      {/* <div>
-        {interval.length === 0 ? (
-          <span>Выходной</span>
-        ) : (
-          interval.map((slot, index) => (
-            <span key={index}>
-              {slot.from} — {slot.to}
-            </span>
-          ))
-        )}
-      </div> */}
+      <Interview
+        dayNumber={dayNumber}
+        interval={interval}
+        handleScheduleChange={handleScheduleChange}
+      />
     </div>
   );
 }

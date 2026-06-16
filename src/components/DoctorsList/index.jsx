@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DoctorsCard from "../DoctorsCard";
+import styles from "./DoctorList.module.css";
 
 export default function DoctorsList() {
   const [doctor, setDoctor] = useState([]);
@@ -22,10 +23,13 @@ export default function DoctorsList() {
   }, []);
 
   return (
-    <div>
-      {doctor.map((doctor) => (
-        <DoctorsCard key={doctor.id} {...doctor} />
-      ))}
+    <div className={styles.doctorListContainer}>
+      <div className={styles.doctorList}>
+        <h2>DOCTORS</h2>
+        {doctor.map((doctor) => (
+          <DoctorsCard key={doctor.id} {...doctor} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { WEEK_DAYS_DICTIONARY } from "../../const";
+import { WEEK_DAYS } from "../../const";
 import DoctorsSchedule from "../DoctorsSchedule";
 import styles from "./DoctorsCard.module.css";
 import { Modal } from "antd";
+import { Card, Descriptions, Button, ConfigProvider, theme, Space } from "antd";
 
 export default function DoctorsCard({
   firstName,
@@ -29,6 +31,12 @@ export default function DoctorsCard({
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    if (id) {
+      getWorkingHours();
+    }
+  }, [id]);
+
   const getWorkingHours = async () => {
     try {
       setLoading(true);
@@ -44,46 +52,67 @@ export default function DoctorsCard({
     }
   };
 
-  const doctorsSchedule = Object.entries(doctorHours).filter(
-    ([day, intervals]) => intervals.length !== 0,
-  );
+  const doctorsSchedule = Object.entries(doctorHours)
+    .filter(([day, intervals]) => intervals.length !== 0)
+    .sort(
+      ([dayA], [dayB]) => WEEK_DAYS.indexOf(dayA) - WEEK_DAYS.indexOf(dayB),
+    );
 
   return (
-    <div className={styles.card}>
-      <h3>{`${firstName} ${lastName}`}</h3>
-      <div>
-        <p>Специализация:{specialization}</p>
-        <p>Email:{email}</p>
-        <p>Телефон:{phone}</p>
-        <p>Лицензия:{veterinaryLicense}</p>
-        <p>Дата найма:{hiredOn}</p>
-      </div>
-      {doctorsSchedule.length === 0 && (
-        <button disabled={loading} onClick={getWorkingHours}>
-          {loading ? "Загрузка" : "Расписание"}
-        </button>
-      )}
-      {doctorsSchedule.map(([day, intervals]) => (
-        <DoctorsSchedule key={day} day={day} intervals={intervals} />
-      ))}
-      {doctorsSchedule.length > 0 && (
-        <button onClick={showModal}>Записаться</button>
-      )}
-      <Modal
-        title={`Расписание врача: ${firstName} ${lastName}`}
-        closable={{ "aria-label": "Custom Close Button" }}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <Space
+        orientation="vertical"
+        size={16}
+        style={{ width: "100%", alignItems: "center" }}
       >
-        <div>
-          <h4>Доступные часы для записи:</h4>
+        <Card
+          title={`${firstName} ${lastName}`}
+          style={{
+            width: 650,
+            textAlign: "left",
+          }}
+        >
+          <Descriptions column={1} bordered size="small">
+            <Descriptions.Item label="Специализация">
+              {specialization}
+            </Descriptions.Item>
 
-          {doctorsSchedule.map(([day, intervals]) => (
-            <DoctorsSchedule key={day} day={day} intervals={intervals} />
-          ))}
-        </div>
-      </Modal>
-    </div>
+            <Descriptions.Item label="Email">{email}</Descriptions.Item>
+
+            <Descriptions.Item label="Телефон">{phone}</Descriptions.Item>
+
+            <Descriptions.Item label="Лицензия">
+              {veterinaryLicense}
+            </Descriptions.Item>
+
+            <Descriptions.Item label="Дата найма">{hiredOn}</Descriptions.Item>
+          </Descriptions>
+          <div
+            style={{
+              marginTop: 20,
+              marginBottom: 10,
+              fontWeight: "500",
+              color: "rgba(255, 255, 255, 0.45)",
+            }}
+          >
+            Доступное время для записи:
+          </div>
+
+          <Space direction="vertical" size={1} style={{ width: "100%" }}>
+            {doctorsSchedule.length > 0 ? (
+              doctorsSchedule.map(([day, intervals]) => (
+                <DoctorsSchedule key={day} day={day} intervals={intervals} />
+              ))
+            ) : (
+              <span
+                style={{ color: "rgba(255, 255, 255, 0.25)", fontSize: "13px" }}
+              >
+                Нет доступных интервалов
+              </span>
+            )}
+          </Space>
+        </Card>
+      </Space>
+    </ConfigProvider>
   );
 }

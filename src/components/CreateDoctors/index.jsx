@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./CreateDoctors.module.css";
 import {
@@ -15,10 +15,9 @@ import dayjs from "dayjs";
 import api from "../../api/axios";
 import DoctorsListAdmin from "../DoctorsListAdmin";
 
-export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
+export default function CreateDoctors() {
   const { token } = useSelector((state) => state.token);
   const [editingDoctor, setEditingDoctor] = useState(null);
-  const [editWorkingHours, setEditWorkingHours] = useState([]);
   const [formData, setFormData] = useState({
     firstName: "Maks",
     lastName: "Maks",
@@ -34,6 +33,31 @@ export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
     hiredOn: "",
     active: true,
   });
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    const fetchAllDoctors = async () => {
+      try {
+        const response = await api.get("/api/doctors");
+        const data = response.data;
+        console.log(data);
+        setDoctors([...data.results].reverse());
+      } catch (error) {
+        console.log("error");
+      }
+    };
+    fetchAllDoctors();
+  }, []);
+
+  const deleteDoctor = async (id) => {
+    try {
+      const response = await api.delete(`/api/doctors/${id}`);
+      const data = response.data;
+      setDoctors((prev) => prev.filter((doctor) => doctor.id !== id));
+    } catch (error) {
+      console.log("Error");
+    }
+  };
 
   const editDoctor = async (id) => {
     try {
@@ -140,6 +164,7 @@ export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
       console.log("Error");
     }
   };
+
   return (
     <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
       <div>
@@ -152,130 +177,142 @@ export default function CreateDoctors({ doctors, setDoctors, deleteDoctor }) {
           />
         </div>
 
-        <h2>{editingDoctor ? "EDIT DOCTOR" : "CREATE DOCTOR"}</h2>
-        <form
-          className={styles.mainForm}
-          style={{ display: "flex", flexDirection: "column" }}
-          onSubmit={handleSubmit}
-        >
-          <Input
-            type="text"
-            name="firstName"
-            placeholder="Enter first name"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="lastName"
-            placeholder="Enter last name"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="specialization"
-            placeholder="Enter specialization"
-            value={formData.specialization}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="phone"
-            placeholder="Enter phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="email"
-            placeholder="Enter e-mail"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="veterinaryLicense"
-            placeholder="Enter veterinaryLicense"
-            value={formData.veterinaryLicense}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="bio"
-            placeholder="Enter bio"
-            value={formData.bio}
-            onChange={handleInputChange}
-            required
-          />
-          <Input
-            type="text"
-            name="photoUrl"
-            placeholder="Enter photo url"
-            value={formData.photoUrl}
-            onChange={handleInputChange}
-            required
-          />
-          <InputNumber
-            min={0}
-            max={100}
-            placeholder="Enter years of experience"
-            value={formData.yearsOfExperience}
-            onChange={handleNumberChange}
-            style={{ width: "100%" }}
-            required
-          />
-          <Space orientation="vertical" style={{ width: "100%" }}>
-            <DatePicker
-              onChange={onChangeDateOfBirth}
-              value={
-                formData.dateOfBirth
-                  ? dayjs(formData.dateOfBirth, "YYYY-MM-DD")
-                  : null
-              }
-              format="YYYY-MM-DD"
-              placeholder="enter date of birth"
-              style={{ width: "100%" }}
-              disabledDate={(current) =>
-                current && current > dayjs().endOf("day")
-              }
-            />
-          </Space>
-          <Space orientation="vertical" style={{ width: "100%" }}>
-            <DatePicker
-              onChange={onChangeHiredOn}
-              value={
-                formData.hiredOn ? dayjs(formData.hiredOn, "YYYY-MM-DD") : null
-              }
-              format="YYYY-MM-DD"
-              placeholder="enter hired on"
-              style={{ width: "100%" }}
-              disabledDate={(current) =>
-                current && current > dayjs().endOf("day")
-              }
-            />
-          </Space>
-          <Select
-            placeholder="Enter active"
-            value={formData.active}
-            onChange={handleActiveChange}
-            style={{ width: "100%", textAlign: "left" }}
-            options={[
-              { value: true, label: "Actived" },
-              { value: false, label: "Not actived" },
+        <div className={styles.collapseForm}>
+          <Collapse
+            defaultActiveKey={["1"]}
+            items={[
+              {
+                key: "1",
+                label: (
+                  <h2>{editingDoctor ? "EDIT DOCTOR" : "CREATE DOCTOR"}</h2>
+                ),
+                children: (
+                  <form className={styles.mainForm} onSubmit={handleSubmit}>
+                    <Input
+                      type="text"
+                      name="firstName"
+                      placeholder="Enter first name"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="lastName"
+                      placeholder="Enter last name"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="specialization"
+                      placeholder="Enter specialization"
+                      value={formData.specialization}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="phone"
+                      placeholder="Enter phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="email"
+                      placeholder="Enter e-mail"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="veterinaryLicense"
+                      placeholder="Enter veterinaryLicense"
+                      value={formData.veterinaryLicense}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="bio"
+                      placeholder="Enter bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="photoUrl"
+                      placeholder="Enter photo url"
+                      value={formData.photoUrl}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <InputNumber
+                      min={0}
+                      max={100}
+                      placeholder="Enter years of experience"
+                      value={formData.yearsOfExperience}
+                      onChange={handleNumberChange}
+                      style={{ width: "100%" }}
+                      required
+                    />
+                    <Space orientation="vertical" style={{ width: "100%" }}>
+                      <DatePicker
+                        onChange={onChangeDateOfBirth}
+                        value={
+                          formData.dateOfBirth
+                            ? dayjs(formData.dateOfBirth, "YYYY-MM-DD")
+                            : null
+                        }
+                        format="YYYY-MM-DD"
+                        placeholder="enter date of birth"
+                        style={{ width: "100%" }}
+                        disabledDate={(current) =>
+                          current && current > dayjs().endOf("day")
+                        }
+                      />
+                    </Space>
+                    <Space orientation="vertical" style={{ width: "100%" }}>
+                      <DatePicker
+                        onChange={onChangeHiredOn}
+                        value={
+                          formData.hiredOn
+                            ? dayjs(formData.hiredOn, "YYYY-MM-DD")
+                            : null
+                        }
+                        format="YYYY-MM-DD"
+                        placeholder="enter hired on"
+                        style={{ width: "100%" }}
+                        disabledDate={(current) =>
+                          current && current > dayjs().endOf("day")
+                        }
+                      />
+                    </Space>
+                    <Select
+                      placeholder="Enter active"
+                      value={formData.active}
+                      onChange={handleActiveChange}
+                      style={{ width: "100%", textAlign: "left" }}
+                      options={[
+                        { value: true, label: "Actived" },
+                        { value: false, label: "Not actived" },
+                      ]}
+                    />
+
+                    <Button type="primary" htmlType="submit" block>
+                      {editingDoctor ? "Edit" : "Create"}
+                    </Button>
+                  </form>
+                ),
+              },
             ]}
           />
-
-          <Button type="primary" htmlType="submit" block>
-            {editingDoctor ? "Edit" : "Create"}
-          </Button>
-        </form>
+        </div>
       </div>
     </ConfigProvider>
   );

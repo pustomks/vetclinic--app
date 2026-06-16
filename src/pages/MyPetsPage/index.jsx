@@ -70,6 +70,10 @@ export default function MyPetsPage() {
           : [data, ...pets],
       );
 
+      if (!editPet) {
+        setPage(1);
+      }
+
       setFormData({
         name: "",
         species: undefined,

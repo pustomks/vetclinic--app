@@ -1,0 +1,23 @@
+.doctorListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.doctorList {
+  width: 100%;
+  max-width: 650px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.pageDoctor {
+  display: flex;
+  gap: 15px;
+}

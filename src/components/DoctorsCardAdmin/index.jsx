@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { WEEK_DAYS_DICTIONARY } from "../../const";
+import { WEEK_DAYS } from "../../const";
 
 import {
   Modal,
@@ -31,11 +31,7 @@ export default function DoctorsCardAdmin({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [doctorHours, setDoctorHours] = useState({});
-  const [editDoctorHours, setEditDoctorHours] = useState({
-    dayOfWeek: "",
-    startTime: "",
-    endTime: "",
-  });
+  const [weeklyScheduleDoctors, setWeeklyScheduleDoctors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const showModal = () => {
@@ -79,39 +75,40 @@ export default function DoctorsCardAdmin({
   };
   const doctorsSchedule = Object.entries(doctorHours);
 
-  const editDoctorWorkingHours = async (e) => {
-    e.preventDefault();
+  const handleScheduleChange = (dayNumber, dayIntervals) => {
+    setWeeklyScheduleDoctors((prev) => ({
+      ...prev,
+      [dayNumber]: dayIntervals,
+    }));
+  };
+
+  const handleSaveWeeklySchedule = async () => {
     setIsLoading(true);
+
+    const allIntervals = Object.values(weeklyScheduleDoctors)
+      .flat()
+      .filter((item) => item && item.startTime && item.endTime)
+      .map((item) => ({
+        dayOfWeek: Number(item.dayOfWeek),
+        startTime: item.startTime,
+        endTime: item.endTime,
+      }));
+
     const formData = {
-      intervals: [
-        {
-          dayOfWeek: Number(editDoctorHours.dayOfWeek),
-          startTime: editDoctorHours.startTime,
-          endTime: editDoctorHours.endTime,
-        },
-      ],
+      intervals: allIntervals,
     };
     try {
       const response = await api.put(
         `/api/doctors/${id}/working-hours`,
         formData,
       );
-      const { intervals } = response.data;
-      setEditDoctorHours({ dayOfWeek: "", startTime: "", endTime: "" });
       getWorkinghours();
+      setIsModalOpen(false);
     } catch (error) {
       console.log("Error");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleDoctorsHourschange = (e) => {
-    const { name, value } = e.target;
-    setEditDoctorHours((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   return (
@@ -169,49 +166,28 @@ export default function DoctorsCardAdmin({
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
+            footer={[
+              <Button key="cancel" onClick={handleCancel}>
+                Отмена
+              </Button>,
+              <Button
+                key="save"
+                type="primary"
+                loading={isLoading}
+                onClick={handleSaveWeeklySchedule}
+              >
+                Сохранить расписание
+              </Button>,
+            ]}
           >
             {doctorsSchedule.map(([day, interval]) => (
-              <DoctorsSheduleAdmin key={day} day={day} interval={interval} />
+              <DoctorsSheduleAdmin
+                key={day}
+                day={day}
+                interval={interval}
+                handleScheduleChange={handleScheduleChange}
+              />
             ))}
-
-            <form
-              onSubmit={editDoctorWorkingHours}
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <input
-                type="number"
-                name="dayOfWeek"
-                placeholder="Day of week (1-7)"
-                value={editDoctorHours.dayOfWeek}
-                onChange={handleDoctorsHourschange}
-                min="1"
-                max="7"
-                required
-              />
-              <input
-                type="text"
-                name="startTime"
-                placeholder="Start time (09:00)"
-                value={editDoctorHours.startTime}
-                onChange={handleDoctorsHourschange}
-              />
-              <input
-                type="text"
-                name="endTime"
-                placeholder="End time (18:00)"
-                value={editDoctorHours.endTime}
-                onChange={handleDoctorsHourschange}
-              />
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={isLoading}
-                block
-                style={{ marginTop: "10px" }}
-              >
-                Save
-              </Button>
-            </form>
           </Modal>
         </Card>
       </Space>
