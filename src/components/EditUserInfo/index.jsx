@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/slices/tokenSlice";
-import { Space, Input, Button } from "antd";
-import { ConfigProvider, theme } from "antd";
+import { Space, Input, Button, App } from "antd";
 import styles from "./EditUserInfo.module.css";
+import api from "../../api/axios";
 
 export default function EditUserInfo() {
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
   });
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { token } = useSelector((state) => state.token);
+
+  const { message } = App.useApp();
 
   const dispatch = useDispatch();
 
@@ -20,26 +21,18 @@ export default function EditUserInfo() {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/users/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log(response);
-        if (!response.ok) {
-          throw new Error("error");
-        }
-        const { email, fullName } = await response.json();
+        const response = await api.get("/api/users/me");
+        const { email, fullName } = response.data;
         setFormData({
           email,
           fullName,
         });
       } catch (error) {
         console.log(error);
-        setError(true);
         dispatch(logout());
+        message.error(
+          error.response?.data?.message || "Failed to load user profile",
+        );
       } finally {
         setLoading(false);
       }
@@ -53,55 +46,49 @@ export default function EditUserInfo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await fetch("/api/users/me", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
+      const response = await api.patch("/api/users/me", formData);
+      const data = response.data;
+      setFormData({
+        email: data.email,
+        fullName: data.fullName,
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        setFormData({
-          email: data.email,
-          fullName: data.fullName,
-        });
-      }
       console.log(data);
+      message.success("Profile updated successfully!");
     } catch (error) {
       console.log(error);
+      message.error(
+        error.response?.data?.message || "Failed to update profile information",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (error) return <h1> ERROR</h1>;
   return (
     <div className={styles.editContainer}>
       <h2>Редактировать профиль</h2>
 
-      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-        <form className={styles.formEditUserInfo} onSubmit={handleSubmit}>
-          <Input
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleInputChange}
-            placeholder="Full Name"
-            disabled={loading}
-          />
-          <Input
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Email"
-            disabled={loading}
-          />
-          <Button type="primary" htmlType="submit" block>
-            Save
-          </Button>
-        </form>
-      </ConfigProvider>
+      <form className={styles.formEditUserInfo} onSubmit={handleSubmit}>
+        <Input
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleInputChange}
+          placeholder="Full Name"
+          disabled={loading}
+        />
+        <Input
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          placeholder="Email"
+          disabled={loading}
+        />
+        <Button loading={loading} type="primary" htmlType="submit" block>
+          Save
+        </Button>
+      </form>
     </div>
   );
 }

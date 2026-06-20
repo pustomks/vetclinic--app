@@ -4,8 +4,9 @@ import { WEEK_DAYS_DICTIONARY } from "../../const";
 import { WEEK_DAYS } from "../../const";
 import DoctorsSchedule from "../DoctorsSchedule";
 import styles from "./DoctorsCard.module.css";
-import { Modal } from "antd";
-import { Card, Descriptions, Button, ConfigProvider, theme, Space } from "antd";
+import { Modal, App } from "antd";
+import { Card, Descriptions, Button, Space } from "antd";
+import api from "../../api/axios";
 
 export default function DoctorsCard({
   firstName,
@@ -20,6 +21,7 @@ export default function DoctorsCard({
   const [doctorHours, setDoctorHours] = useState({});
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { message } = App.useApp();
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -40,13 +42,16 @@ export default function DoctorsCard({
   const getWorkingHours = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/doctors/${id}/working-hours`);
-      const { schedule } = await response.json();
+      const response = await api.get(`/api/doctors/${id}/working-hours`);
+      const { schedule } = response.data;
       setDoctorHours(schedule);
-
       console.log(schedule);
     } catch (error) {
       console.log(error);
+      message.error(
+        error.response?.data?.message ||
+          "Failed to load doctor's working hours",
+      );
     } finally {
       setLoading(false);
     }
@@ -59,60 +64,58 @@ export default function DoctorsCard({
     );
 
   return (
-    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-      <Space
-        orientation="vertical"
-        size={16}
-        style={{ width: "100%", alignItems: "center" }}
+    <Space
+      orientation="vertical"
+      size={16}
+      style={{ width: "100%", alignItems: "center" }}
+    >
+      <Card
+        title={`${firstName} ${lastName}`}
+        style={{
+          width: 650,
+          textAlign: "left",
+        }}
       >
-        <Card
-          title={`${firstName} ${lastName}`}
+        <Descriptions column={1} bordered size="small">
+          <Descriptions.Item label="Специализация">
+            {specialization}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Email">{email}</Descriptions.Item>
+
+          <Descriptions.Item label="Телефон">{phone}</Descriptions.Item>
+
+          <Descriptions.Item label="Лицензия">
+            {veterinaryLicense}
+          </Descriptions.Item>
+
+          <Descriptions.Item label="Дата найма">{hiredOn}</Descriptions.Item>
+        </Descriptions>
+        <div
           style={{
-            width: 650,
-            textAlign: "left",
+            marginTop: 20,
+            marginBottom: 10,
+            fontWeight: "500",
+            color: "rgba(255, 255, 255, 0.45)",
           }}
         >
-          <Descriptions column={1} bordered size="small">
-            <Descriptions.Item label="Специализация">
-              {specialization}
-            </Descriptions.Item>
+          Доступное время для записи:
+        </div>
 
-            <Descriptions.Item label="Email">{email}</Descriptions.Item>
-
-            <Descriptions.Item label="Телефон">{phone}</Descriptions.Item>
-
-            <Descriptions.Item label="Лицензия">
-              {veterinaryLicense}
-            </Descriptions.Item>
-
-            <Descriptions.Item label="Дата найма">{hiredOn}</Descriptions.Item>
-          </Descriptions>
-          <div
-            style={{
-              marginTop: 20,
-              marginBottom: 10,
-              fontWeight: "500",
-              color: "rgba(255, 255, 255, 0.45)",
-            }}
-          >
-            Доступное время для записи:
-          </div>
-
-          <Space direction="vertical" size={1} style={{ width: "100%" }}>
-            {doctorsSchedule.length > 0 ? (
-              doctorsSchedule.map(([day, intervals]) => (
-                <DoctorsSchedule key={day} day={day} intervals={intervals} />
-              ))
-            ) : (
-              <span
-                style={{ color: "rgba(255, 255, 255, 0.25)", fontSize: "13px" }}
-              >
-                Нет доступных интервалов
-              </span>
-            )}
-          </Space>
-        </Card>
-      </Space>
-    </ConfigProvider>
+        <Space direction="vertical" size={1} style={{ width: "100%" }}>
+          {doctorsSchedule.length > 0 ? (
+            doctorsSchedule.map(([day, intervals]) => (
+              <DoctorsSchedule key={day} day={day} intervals={intervals} />
+            ))
+          ) : (
+            <span
+              style={{ color: "rgba(255, 255, 255, 0.25)", fontSize: "13px" }}
+            >
+              Нет доступных интервалов
+            </span>
+          )}
+        </Space>
+      </Card>
+    </Space>
   );
 }

@@ -8,7 +8,7 @@ export default function DoctorsSchedule({ day, intervals }) {
       <p>
         <span>{WEEK_DAYS_DICTIONARY[day]}: </span>
         {intervals.map((i, index) => (
-          <Button size="medium" type="dashed" key={index}>
+          <Button size="middle" type="dashed" key={index}>
             {i.from} - {i.to}
           </Button>
         ))}

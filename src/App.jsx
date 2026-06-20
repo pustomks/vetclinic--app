@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserRole, startRoleLoading } from "./store/slices/roleSlice";
 import AdminRoute from "./components/AdminRoute";
 import DoctorsOfficePage from "./pages/DoctorsOfficePage";
+import { ConfigProvider, theme, App as AntdApp } from "antd";
+import api from "./api/axios";
 
 function App() {
   const { token } = useSelector((state) => state.token);
@@ -30,49 +32,43 @@ function App() {
     const checkRole = async () => {
       dispatch(startRoleLoading());
       try {
-        const response = await fetch("/api/users/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("error");
-        }
-        const { role } = await response.json();
+        const response = await api.get("/api/users/me");
+        const { role } = response.data;
         dispatch(setUserRole(role));
-
         console.log(role);
       } catch (error) {
-        console.log(error);
+        console.log("Error checking role:", error);
       }
     };
     checkRole();
   }, [token]);
 
   return (
-    <>
-      <HeaderApp />
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <AntdApp>
+        <>
+          <HeaderApp />
 
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/favorite" element={<FavoritePage />} />
-        <Route path="/doctors" element={<DoctorsPage />} />
-        <Route path="/contacs" element={<ContacsPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/profile" element={<MyProfilePage />} />
-          <Route path="/mypets" element={<MyPetsPage />} />
-          <Route path="/mypets/:id" element={<MyPetPage />} />
-        </Route>
-        <Route element={<AdminRoute />}>
-          <Route path="/doctors-office" element={<DoctorsOfficePage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/favorite" element={<FavoritePage />} />
+            <Route path="/doctors" element={<DoctorsPage />} />
+            <Route path="/contacs" element={<ContacsPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<MyProfilePage />} />
+              <Route path="/mypets" element={<MyPetsPage />} />
+              <Route path="/mypets/:id" element={<MyPetPage />} />
+            </Route>
+            <Route element={<AdminRoute />}>
+              <Route path="/doctors-office" element={<DoctorsOfficePage />} />
+            </Route>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </>
+      </AntdApp>
+    </ConfigProvider>
   );
 }
 

@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
-function Interview({ dayNumber, interval, handleScheduleChange }) {
+function DoctorsScheduleDayForms({
+  dayNumber,
+  interval,
+  handleScheduleChange,
+}) {
   const {
     register,
     control,
@@ -84,4 +88,4 @@ function Interview({ dayNumber, interval, handleScheduleChange }) {
   );
 }
 
-export default Interview;
+export default DoctorsScheduleDayForms;

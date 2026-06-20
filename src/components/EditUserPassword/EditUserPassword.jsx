@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Space, Input, Button } from "antd";
-import { ConfigProvider, theme } from "antd";
+import { Space, Input, Button, App } from "antd";
 import styles from "./EditUserPassword.module.css";
+import api from "../../api/axios";
 
 export default function EditUserPassword() {
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
   });
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { token } = useSelector((state) => state.token);
+
+  const { message } = App.useApp();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,55 +20,46 @@ export default function EditUserPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await fetch("/api/users/me/password", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-      console.log(response);
-
-      if (!response.ok) {
-        throw new Error("error");
-      }
+      const response = await api.put("/api/users/me/password", formData);
+      const data = response.data;
+      message.success("Password changed successfully!");
       setFormData({ currentPassword: "", newPassword: "" });
     } catch (error) {
       console.error(error);
-      setError(true);
+      message.error(
+        error.response?.data?.message || "Failed to change password",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (error) return <h1> ERROR </h1>;
-
   return (
     <div className={styles.editContainer}>
-      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-        <h2>Изменить пароль</h2>
-        <form className={styles.editUserPassword} onSubmit={handleSubmit}>
-          <Input.Password
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleInputChange}
-            placeholder="Current password"
-            required
-          />
-          <Input.Password
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleInputChange}
-            placeholder="New password"
-            required
-          />
-          <Button type="primary" htmlType="submit" block>
-            Save
-          </Button>
-        </form>
-      </ConfigProvider>
+      <h2>Изменить пароль</h2>
+      <form className={styles.editUserPassword} onSubmit={handleSubmit}>
+        <Input.Password
+          type="password"
+          name="currentPassword"
+          value={formData.currentPassword}
+          onChange={handleInputChange}
+          placeholder="Current password"
+          required
+        />
+        <Input.Password
+          type="password"
+          name="newPassword"
+          value={formData.newPassword}
+          onChange={handleInputChange}
+          placeholder="New password"
+          required
+        />
+        <Button type="primary" htmlType="submit" block>
+          Save
+        </Button>
+      </form>
     </div>
   );
 }

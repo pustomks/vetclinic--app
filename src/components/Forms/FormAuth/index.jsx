@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../../store/slices/tokenSlice";
-import { Space, Input, Button } from "antd";
-import { ConfigProvider, theme } from "antd";
+import { Input, Button, App } from "antd";
 import styles from "./FormAuth.module.css";
 import api from "../../../api/axios";
 
@@ -13,9 +12,10 @@ export default function FormAuth() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { message } = App.useApp();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,18 +24,20 @@ export default function FormAuth() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     try {
       const { data } = await api.post("/api/auth/login", formData);
       const { accessToken } = data;
       dispatch(login(accessToken));
       console.log(accessToken);
+      message.success("Successfully authorized!");
       navigate("/");
     } catch (err) {
       console.log(err);
-      setError(
-        err.status === 401 ? "Incorrect login or password" : "Server error",
-      );
+      const errorMessage =
+        err.response?.status === 401
+          ? "Incorrect login or password"
+          : "Server error";
+      message.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -45,32 +47,27 @@ export default function FormAuth() {
     <div>
       <h2>AUTHORIZATION</h2>
 
-      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-        <form className={styles.inputAuth} onSubmit={handleSubmit}>
-          <Input
-            type="text"
-            name="username"
-            placeholder="enter user name"
-            value={formData.username}
-            onChange={handleInputChange}
-            required
-          />
-          <Input.Password
-            type="password"
-            name="password"
-            placeholder="enter password"
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-          />
-          <Button disabled={loading} type="primary" htmlType="submit" block>
-            Login
-          </Button>
-          {error ? (
-            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
-          ) : null}
-        </form>
-      </ConfigProvider>
+      <form className={styles.inputAuth} onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          name="username"
+          placeholder="enter user name"
+          value={formData.username}
+          onChange={handleInputChange}
+          required
+        />
+        <Input.Password
+          type="password"
+          name="password"
+          placeholder="enter password"
+          value={formData.password}
+          onChange={handleInputChange}
+          required
+        />
+        <Button loading={loading} type="primary" htmlType="submit" block>
+          Login
+        </Button>
+      </form>
     </div>
   );
 }

@@ -4,42 +4,31 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PetCard from "../../components/PetCard";
 import styles from "./MyPetPage.module.css";
+import { App } from "antd";
+import api from "../../api/axios";
 
 export default function MyPetPage() {
-  const [pet, setPet] = useState({});
-  const [error, setError] = useState(null);
+  const [pet, setPet] = useState(null);
   const { id } = useParams();
   const { token } = useSelector((state) => state.token);
-  console.log(token);
+  const { message } = App.useApp();
+
   useEffect(() => {
     const fetchPet = async () => {
       try {
-        const response = await fetch(`/api/pets/me/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          setError(response.status);
-          return;
-        }
-        const data = await response.json();
-        console.log(data);
+        const response = await api.get(`/api/pets/me/${id}`);
+        const data = response.data;
         setPet(data);
       } catch (error) {
-        setError("server down");
+        console.log(error);
+        message.error(error.response?.data?.message || "Failed to load pet");
       }
     };
     fetchPet();
   }, []);
 
-  if (error === 404) {
-    return <h1>not found</h1>;
-  }
-  if (error) {
-    return <h1>server error</h1>;
+  if (!pet) {
+    return <h2>Питомец не найден</h2>;
   }
 
   return (

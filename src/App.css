@@ -7,3 +7,8 @@
 .d-flex {
   display: flex;
 }
+
+.ant-message {
+  top: 75px !important;
+  z-index: 999 !important;
+}

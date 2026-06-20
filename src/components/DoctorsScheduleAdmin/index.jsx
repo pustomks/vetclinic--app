@@ -1,8 +1,9 @@
 import React from "react";
 import { WEEK_DAYS_NUMBERS } from "../../const";
-import Interview from "../DoctorsScheduleForms";
 
-export default function DoctorsSheduleAdmin({
+import DoctorsScheduleDayForms from "../DoctorsScheduleDayForms";
+
+export default function DoctorsScheduleAdmin({
   day,
   interval,
   handleScheduleChange,
@@ -14,7 +15,7 @@ export default function DoctorsSheduleAdmin({
         День {dayNumber} ({day})
       </span>
 
-      <Interview
+      <DoctorsScheduleDayForms
         dayNumber={dayNumber}
         interval={interval}
         handleScheduleChange={handleScheduleChange}
