@@ -1,11 +1,29 @@
-import { Button } from "antd";
+import { Button, App } from "antd";
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
+import { WEEK_DAYS, WEEK_DAYS_NUMBERS } from "../../const";
+import { useForm } from "react-hook-form";
+import DayScheduleInterval from "../DayScheduleInterval";
+
+function buildEmptySchedule() {
+  return WEEK_DAYS.reduce((acc, elem) => {
+    acc[elem] = [{ startTime: "", endTime: "" }];
+    return acc;
+  }, {});
+}
 
 export default function DoctorsScheduleForm({ id }) {
   const [weeklyScheduleDoctors, setWeeklyScheduleDoctors] = useState({});
   const [doctorHours, setDoctorHours] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { days: buildEmptySchedule() },
+  });
 
   useEffect(() => {
     const getWorkinghours = async () => {
@@ -54,12 +72,35 @@ export default function DoctorsScheduleForm({ id }) {
       setIsLoading(false);
     }
   };
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
   return (
     <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {WEEK_DAYS.map((day) => (
+          <DayScheduleInterval
+            key={day}
+            day={day}
+            control={control}
+            register={register}
+            errors={errors}
+          />
+        ))}
+        <Button
+          style={{ marginTop: "20px" }}
+          htmlType="submit"
+          type="dashed"
+          block
+        >
+          Save
+        </Button>
+      </form>
       {/* <Button key="cancel" onClick={handleCancel}>
         Отмена
       </Button> */}
-      ,
+
       {/* <Button
         key="save"
         type="primary"

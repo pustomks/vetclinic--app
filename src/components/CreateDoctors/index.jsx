@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./CreateDoctors.module.css";
 import {
@@ -54,7 +54,7 @@ export default function CreateDoctors() {
     fetchAllDoctors();
   }, []);
 
-  const deleteDoctor = async (id) => {
+  const deleteDoctor = useCallback((id) => {
     modal.confirm({
       title: "Are you sure you want to delete this doctor?",
       content: "This action cannot be undone.",
@@ -75,7 +75,7 @@ export default function CreateDoctors() {
         }
       },
     });
-  };
+  }, []);
 
   const editDoctor = async (id) => {
     try {
@@ -101,7 +101,7 @@ export default function CreateDoctors() {
     }
   };
 
-  const startEditDoctor = (doctor) => {
+  const startEditDoctor = useCallback((doctor) => {
     setEditingDoctor(doctor.id);
     setFormData({
       firstName: doctor.firstName,
@@ -117,7 +117,7 @@ export default function CreateDoctors() {
       hiredOn: doctor.hiredOn,
       active: doctor.active,
     });
-  };
+  }, []);
 
   const onChangeDateOfBirth = (date, dateString) => {
     setFormData((prev) => ({

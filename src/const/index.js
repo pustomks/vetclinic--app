@@ -24,13 +24,3 @@ export const WEEK_DAYS_NUMBERS = {
 };
 
 export const WEEK_DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-
-function getNumbers({ a, ...doctor }) {}
-
-const obj = {
-  a: 1,
-  b: 2,
-  c: 3,
-};
-
-getNumbers(obj);

@@ -1,15 +1,9 @@
-.FormAuth {
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.authButtons {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
+.containerAuth {
   max-width: 500px;
   width: 100%;
   margin: 15px auto 0 auto;
+}
+
+.containerAuth :global(.ant-tabs-content) {
+  padding-top: 24px;
 }

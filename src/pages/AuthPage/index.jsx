@@ -1,25 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FormRegister from "../../components/Forms/FormRegister";
 import FormAuth from "../../components/Forms/FormAuth";
 import styles from "./AuthPage.module.css";
-import { Button } from "antd";
+import { Tabs } from "antd";
+
 export default function AuthPage() {
   const [authType, setAuthType] = useState("auth");
 
+  const onChange = (key) => {
+    setAuthType(key);
+  };
+
+  const items = [
+    {
+      key: "auth",
+      label: "Authorise",
+      children: <FormAuth />,
+    },
+    {
+      key: "reg",
+      label: "Register",
+      children: <FormRegister />,
+    },
+  ];
+
   return (
     <div className={styles.containerAuth}>
-      <div className={styles.FormAuth}>
-        {authType === "reg" ? <FormRegister /> : <FormAuth />}
-      </div>
-
-      <div className={styles.authButtons}>
-        <Button block onClick={() => setAuthType("auth")}>
-          authorise
-        </Button>
-        <Button block onClick={() => setAuthType("reg")}>
-          register
-        </Button>
-      </div>
+      <Tabs activeKey={authType} onChange={onChange} centered items={items} />
     </div>
   );
 }
